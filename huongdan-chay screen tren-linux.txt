@@ -1,0 +1,25 @@
+sudo apt update
+sudo apt install screen
+
+tao 1 phien
+screen
+
+dat ten phien do
+screen -S myapp
+
+thoat phien do
+Ctrl + A, sau đó nhan D
+
+Dong phien do
+Ctrl + D
+
+vao phien dang chay
+screen -r myapp
+screen -r
+
+xem phien nao dang chay
+screen -ls
+
+vao phien theo ID
+screen -r [ID]
+

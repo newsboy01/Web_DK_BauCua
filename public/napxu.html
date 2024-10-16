@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nạp Xu</title>
+    <script>
+        function updateVND() {
+            const soxu = document.getElementById('soxu').value;
+            const tyGiaVND = 25; // Tỷ giá: 1 xu = 25 VND
+            const soTienVND = soxu * tyGiaVND;
+
+            // Định dạng số tiền thành dạng có dấu chấm ngăn cách phần nghìn
+            document.getElementById('soTien').textContent = new Intl.NumberFormat('vi-VN').format(soTienVND) + " VND";
+        }
+    </script>
+</head>
+<body>
+<!-- Thanh điều hướng (Navbar) -->
+<nav>
+    <ul>
+        <li><a href="/">Trang chủ</a></li>
+        <li><a href="/napxu.html">Nạp Xu</a></li>
+        <li><a href="/update_expiration.html">Cập nhật thời hạn</a></li>
+        <li><a href="/update_sec_password.html">Cập nhật mật khẩu cấp 2</a></li>
+    </ul>
+</nav>
+<!-- Nội dung của trang sẽ hiển thị ở dưới đây -->
+<div id="content">
+    <h1>Nạp Xu</h1>
+    <form id="napXuForm">
+        <label for="tk1">Tài khoản nạp:</label>
+        <input type="text" id="tk1" name="tk1" required><br>
+
+        <label for="soxu">Số xu:</label>
+        <input type="number" id="soxu" name="soxu" oninput="updateVND()" required><br>
+        <p>Số tiền tương ứng: <span id="soTien">0 VND</span></p>
+
+        <label for="mk2">Mật khẩu:</label>
+        <input type="password" id="mk2" name="mk2" required><br>
+
+        <button type="submit">Nạp xu</button>
+    </form>
+
+    <h2>Top 10 giao dịch mới nhất</h2>
+    <table border="1" id="historyTable">
+        <thead>
+            <tr>
+                <th>Tài khoản</th>
+                <th>Số xu nạp</th>
+                <th>Xu cũ</th>
+                <th>Xu mới</th>
+                <th>Ngày giờ</th>
+            </tr>
+        </thead>
+        <tbody>
+            <!-- Dữ liệu sẽ được chèn từ server -->
+        </tbody>
+    </table>
+</div>
+    <script>
+        document.getElementById('napXuForm').addEventListener('submit', async function(event) {
+            event.preventDefault();
+
+            const formData = new FormData(this);
+            const data = {
+                tk1: formData.get('tk1'),
+                soxu: formData.get('soxu'),
+                mk2: formData.get('mk2')
+            };
+
+            // Gửi dữ liệu nạp xu tới server
+            const response = await fetch('/napxu', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(data)
+            });
+
+            const result = await response.json();
+            if (result.success) {
+                alert("Nạp xu thành công!");
+                loadHistory();
+            } else {
+                alert(result.message);
+            }
+        });
+
+        // Hàm chuyển đổi định dạng ngày tháng
+        function formatDateTime(dateTimeString) {
+            const date = new Date(dateTimeString); // Tạo đối tượng Date từ chuỗi ISO 8601
+            const hours = String(date.getHours()).padStart(2, '0'); // Lấy giờ và thêm số 0 ở phía trước nếu cần
+            const minutes = String(date.getMinutes()).padStart(2, '0'); // Lấy phút và thêm số 0 ở phía trước nếu cần
+            const day = String(date.getDate()).padStart(2, '0'); // Lấy ngày và thêm số 0 ở phía trước nếu cần
+            const month = String(date.getMonth() + 1).padStart(2, '0'); // Lấy tháng (tháng 0 là tháng Giêng)
+            const year = date.getFullYear(); // Lấy năm
+
+            return `${hours}:${minutes} ${day}/${month}/${year}`; // Trả về định dạng hh:mm dd/mm/yyyy
+        }
+
+        // Hàm tải top 10 lịch sử nạp xu
+        async function loadHistory() {
+            const response = await fetch('/history');
+            const history = await response.json();
+
+            const tbody = document.querySelector('#historyTable tbody');
+            tbody.innerHTML = ''; // Xóa dữ liệu cũ
+
+            history.forEach(item => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${item.cAccName}</td>
+                    <td>${item.addExtPoint}</td>
+                    <td>${item.oldExtPoint}</td>
+                    <td>${item.newExtPoint}</td>
+                    <td>${formatDateTime(item.nDateTime)}</td> <!-- Chuyển đổi nDateTime -->
+                `;
+                tbody.appendChild(row);
+            });
+        }
+
+        // Tải lịch sử khi trang được mở
+        loadHistory();
+    </script>
+</body>
+</html>

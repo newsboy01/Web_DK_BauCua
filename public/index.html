@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Đăng ký tài khoản</title>
+    <script>
+        async function registerAccount(event) {
+            event.preventDefault(); // Ngăn chặn form gửi thông qua phương thức mặc định
+
+            const taikhoan = document.getElementById('tk').value;
+            const matkhau = document.getElementById('mk').value;
+
+            // Kiểm tra xem các trường đã được nhập chưa
+            if (!taikhoan || !matkhau) {
+                document.getElementById('message').textContent = 'Vui lòng nhập đầy đủ thông tin.';
+                return;
+            }
+
+            // Gửi dữ liệu bằng fetch API (AJAX)
+            const response = await fetch('/register', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    tk: taikhoan,
+                    mk: matkhau
+                })
+            });
+
+            const result = await response.text(); // Nhận phản hồi từ server
+
+            // Hiển thị thông báo từ server
+            document.getElementById('message').textContent = result;
+        }
+    </script>
+</head>
+<body>
+    <!-- Thanh điều hướng (Navbar) -->
+    <nav>
+      <ul>
+          <li><a href="/">Trang chủ</a></li>
+          <li><a href="/napxu.html">Nạp Xu</a></li>
+          <li><a href="/update_expiration.html">Cập nhật thời hạn</a></li>
+          <li><a href="/update_sec_password.html">Cập nhật mật khẩu cấp 2</a></li>
+      </ul>
+    </nav>
+
+    <h1>Đăng ký tài khoản</h1>
+
+    <!-- Form đăng ký -->
+    <form id="registerForm" onsubmit="registerAccount(event)">
+        <label for="tk">Tài khoản:</label>
+        <input type="text" id="tk" name="tk" required><br>
+
+        <label for="mk">Mật khẩu: </label>
+        <input type="password" id="mk" name="mk" required><br>
+
+        <button type="submit">Đăng ký</button>
+    </form>
+
+    <!-- Hiển thị thông báo -->
+    <p id="message"></p>
+</body>
+</html>

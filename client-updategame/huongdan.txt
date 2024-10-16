@@ -1,0 +1,2 @@
+copy 2 file updategame.ps1 va AutoUpdate.bat vao client, de ngoai cung voi game.exe
+nho sua lai IP cua server o file updategame.ps1

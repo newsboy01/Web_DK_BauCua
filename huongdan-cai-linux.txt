@@ -1,0 +1,49 @@
+Các bước cập nhật Node.js trên Ubuntu (Linux)
+Cài đặt hoặc cập nhật nvm (Node Version Manager): nvm là công cụ giúp bạn quản lý các phiên bản Node.js khác nhau dễ dàng.
+
+Cài đặt nvm:
+
+bash
+Copy code
+curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.4/install.sh | bash
+source ~/.bashrc
+Kiểm tra xem nvm đã được cài đặt thành công chưa:
+
+bash
+Copy code
+nvm --version
+Cài đặt phiên bản Node.js mới: Sau khi cài đặt nvm, bạn có thể dùng lệnh sau để cài phiên bản Node.js mới nhất hoặc phiên bản LTS (Long Term Support):
+
+Cài đặt phiên bản Node.js LTS mới nhất (khuyến nghị):
+
+bash
+Copy code
+nvm install --lts
+Hoặc cài đặt phiên bản Node.js cụ thể:
+
+bash
+Copy code
+nvm install 18
+Kiểm tra phiên bản Node.js: Sau khi cài đặt, kiểm tra phiên bản Node.js hiện tại:
+
+bash
+Copy code
+node -v
+Xóa thư mục node_modules và cài đặt lại các gói: Sau khi cập nhật Node.js, bạn nên xóa thư mục node_modules hiện tại và cài đặt lại các gói để đảm bảo chúng tương thích với phiên bản Node.js mới:
+
+Xóa thư mục node_modules:
+
+bash
+Copy code
+rm -rf node_modules
+Cài đặt lại các gói từ file package.json:
+
+bash
+Copy code
+npm install
+Chạy lại ứng dụng: Sau khi đã cài đặt phiên bản Node.js mới và các gói, chạy lại ứng dụng của bạn:
+
+bash
+Copy code
+node server.js
+Làm theo các bước trên sẽ giải quyết vấn đề liên quan đến việc Node.js không tìm thấy module 'node:events'.
